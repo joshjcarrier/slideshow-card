@@ -1,4 +1,4 @@
-class SlideshowCard extends Polymer.Element {
+class SlideshowCard extends LitElement {
 
   myPromise = new Promise((resolve, reject) => { this.resolve = resolve });
 
@@ -10,7 +10,7 @@ class SlideshowCard extends Polymer.Element {
 
   async ready() {
     super.ready();
-    await this.myPromise;
+    await Promise.all([this.updateComplete]);
     this._setInnerCardStyle()
     this._createNavigation();
     this.shadowRoot.firstChild.querySelector('.card').querySelector('.prev').addEventListener('click', this._prevSlide.bind(this));
@@ -194,7 +194,7 @@ class SlideshowCard extends Polymer.Element {
         while(searching && search_counter < 50) {
           if (target.firstElementChild) {
             target = target.firstElementChild;
-          } else if(target.shadowRoot) {
+          } else if(target.shadowRoot && target.shadowRoot.firstElementChild) {
             target = target.shadowRoot;
           } else {
             searching = false;
