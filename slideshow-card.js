@@ -3,12 +3,13 @@ class SlideshowCard extends Polymer.Element {
   constructor() {
     super();
     this.slideIndex = 1;
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });    
   }
 
-  ready() {
+  async ready() {
     super.ready();
-    this._setInnerCardStyle();
+    await this.hasSetup;
+    await this._setInnerCardStyle()
     this._createNavigation();
     this.shadowRoot.firstChild.querySelector('.card').querySelector('.prev').addEventListener('click', this._prevSlide.bind(this));
     this.shadowRoot.firstChild.querySelector('.card').querySelector('.next').addEventListener('click',this._nextSlide.bind(this));
@@ -19,30 +20,39 @@ class SlideshowCard extends Polymer.Element {
       this.addEventListener('mouseout', this._startSlide.bind(this));
     }
     this._showSlides(this.slideIndex);
+    
   }
 
   set hass(hass) {
+    this.hasSetup = this.setupHass(hass);
+  }
+
+  async setupHass(hass) {
+    this._cards = await Promise.all(this._cards);
     if (!this.content) {
       const card = document.createElement('ha-card');
       this.content = document.createElement('div');
       this.content.className = 'card';
       card.appendChild(this.content);
-      if(this.config.cards)
+      if(this.config.cards) {
         this._cards.forEach(item => {
-        item.hass = hass;
-        item.className = 'slides fade';
-      });
+          item.hass = hass;
+          item.className = 'slides fade';
+        });
+      }
+        
       this.card = card;
       this.shadowRoot.appendChild(card);
 
       if(hass.states[this.config.folder]) {
-        this.images = hass.states[this.config.folder].attributes.fileList;
-        hass.states[this.config.folder].attributes.fileList.forEach(item => {
+        this.images = hass.states[this.config.folder].attributes.file_list;
+        hass.states[this.config.folder].attributes.file_list.forEach(item => {
           const image = document.createElement('img');
           var fileLocation = item.substring(11);
           image.setAttribute("src", "/local" + fileLocation);
           image.className = 'slides fade';
           image.style.setProperty("width", "100%");
+          image.style.setProperty("max-height", "100%");
           for(var k in this.config.style) {
             image.style.setProperty(k, this.config.style[k]);
           }
@@ -56,7 +66,7 @@ class SlideshowCard extends Polymer.Element {
           item.hass = hass;
         });
       if(hass.states[this.config.folder]){
-        hass.states[this.config.folder].attributes.fileList.forEach(item => {
+        hass.states[this.config.folder].attributes.file_list.forEach(item => {
           if(!this.images.includes(item)){
             const image = document.createElement('img');
             var fileLocation = item.substring(11);
@@ -72,6 +82,7 @@ class SlideshowCard extends Polymer.Element {
         });
       }
     }
+    
   }
 
   setConfig(config) {
@@ -80,24 +91,31 @@ class SlideshowCard extends Polymer.Element {
     if (!config || (!config.folder && (!config.cards || !Array.isArray(config.cards) || config.cards.length < 2))) {
       throw new Error('Card Configuration is not set up properly!');
     }
+      
+    this._cards = config.cards.map(async (item) => {
+      let element;
+      const helper = await window.loadCardHelpers();
+      if (item.type.startsWith("custom:")){
+        //element = document.createElement(`${item.type.substr("custom:".length)}`);
+        element = helper.createCardElement(item);
+      }
+      else {
+        //element = document.createElement(`hui-${item.type}-card`);
+        element = helper.createCardElement(item);
+      }
+      // try {
+      //   //element.setConfig(item);
+      // } catch(err) {
+      //   showErrorCard(err.message, config);
+      // }
+      
+      if(this.hass)
+        element.hass = this.hass;
 
-    if(config.cards)
-      this._cards = config.cards.map((item) => {
-          let element;
-
-          if (item.type.startsWith("custom:")){
-            element = document.createElement(`${item.type.substr("custom:".length)}`);
-          }
-          else {
-            element = document.createElement(`hui-${item.type}-card`);
-          }
-          element.setConfig(item);
-          if(this.hass)
-            element.hass = this.hass;
-
-          return element;
-        });
-    }
+      return element;
+    });
+    
+  }
 
   _styleCard() {
     for(var k in this.config.style) {
@@ -160,34 +178,37 @@ class SlideshowCard extends Polymer.Element {
     this.card.appendChild(style);
   }
 
-  _setInnerCardStyle() {
-    if(this.config.cards)
-      this._cards.forEach(item => {
-      this.content.appendChild(item);
+  async _setInnerCardStyle() {
+    if(this.config.cards) {
+      const styleCards = await Promise.all(this._cards);
+      styleCards.forEach(item => {
+        this.content.appendChild(item);
 
-      let target = item;
-      if(item.shadowRoot && item.shadowRoot.querySelector("ha-card")) {
-        target = item.shadowRoot.querySelector("ha-card");
-      } else if(item.querySelector("ha-card")) {
-        target = item.querySelector("ha-card");
-      } else if(item.firstChild && item.firstChild.shadowRoot && item.firstChild.shadowRoot.querySelector("ha-card")) {
-        target = item.firstChild.shadowRoot.querySelector("ha-card");
-      }
-
-      if(item.config){
-        for(var k in item.config.style) {
-          target.style.setProperty(k, item.config.style[k]);
+        let target = item;
+        if(item.shadowRoot && item.shadowRoot.querySelector("ha-card")) {
+          target = item.shadowRoot.querySelector("ha-card");
+        } else if(item.querySelector("ha-card")) {
+          target = item.querySelector("ha-card");
+        } else if(item.firstChild && item.firstChild.shadowRoot && item.firstChild.shadowRoot.querySelector("ha-card")) {
+          target = item.firstChild.shadowRoot.querySelector("ha-card");
         }
-      }
-      else if(item._config) {
-        for(var k in item._config.style) {
-          target.style.setProperty(k, item._config.style[k]);
-        }
-      }
 
-      target.style.setProperty('box-shadow', 'none');
-    });
+        if(item.config){
+          for(var k in item.config.style) {
+            target.style.setProperty(k, item.config.style[k]);
+          }
+        }
+        else if(item._config) {
+          for(var k in item._config.style) {
+            target.style.setProperty(k, item._config.style[k]);
+          }
+        }
+
+        target.style.setProperty('box-shadow', 'none');
+      });
+    }
   }
+
 
   _createNavigation() {
     this.content.insertAdjacentHTML('beforeend',`<a class="prev">
