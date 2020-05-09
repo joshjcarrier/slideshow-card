@@ -1,8 +1,9 @@
-# Slideshow Card - No longer supporting
-
+# Slideshow Card
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 
 Slideshow Card for Home Assistant's UI LoveLace
+
+**Updated to work with 0.107.0+ Home Assistant**
 
 ## Configuration Variables
 
@@ -43,7 +44,7 @@ You will need to create a folder in your config directory named `custom_componen
 5. Create a folder in your `WWW` folder named `images`
 6. Add your images to this folder
 7. Restart Home Assistant
-8. Check the sensor.images entity to see if the `fileList` attribute lists your image files
+8. Check the sensor.images entity to see if the `file_list` attribute lists your image files
 9. Add a card to your ui-lovelace.yaml
     ```yaml
     - type: custom:slideshow-card
@@ -57,13 +58,14 @@ Any files you add to the folder should automatically get added to the slide show
 
 ## Installation
 
-1. Copy `slideshow-card.js` to `<config directory>/www/slideshow-card.js`
-2. Add `slideshow-card` as a resource in `ui-lovelace.yaml`
+1. Add repo to HACS
+2. Install via HACS
+3. Copy below to your resources section
 
 ```yaml
 resources:
-  - url: /local/slideshow-card.js
-    type: js
+  - url: /hacsfiles/slideshow-card/slideshow-card.js
+    type: module
 ```
 
 ## Example Configuration
