@@ -1,5 +1,7 @@
 class SlideshowCard extends Polymer.Element {
 
+  myPromise = new Promise(this.resolver);
+
   constructor() {
     super();
     this.slideIndex = 1;
@@ -8,8 +10,8 @@ class SlideshowCard extends Polymer.Element {
 
   async ready() {
     super.ready();
-    await this.hasSetup;
-    await this._setInnerCardStyle()
+    await this.myPromise;
+    this._setInnerCardStyle()
     this._createNavigation();
     this.shadowRoot.firstChild.querySelector('.card').querySelector('.prev').addEventListener('click', this._prevSlide.bind(this));
     this.shadowRoot.firstChild.querySelector('.card').querySelector('.next').addEventListener('click',this._nextSlide.bind(this));
@@ -21,6 +23,10 @@ class SlideshowCard extends Polymer.Element {
     }
     this._showSlides(this.slideIndex);
     
+  }
+
+  resolver(resolve, reject) {
+    this.resolve = resolve;
   }
 
   set hass(hass) {
@@ -82,7 +88,7 @@ class SlideshowCard extends Polymer.Element {
         });
       }
     }
-    
+    this.resolve();
   }
 
   setConfig(config) {
