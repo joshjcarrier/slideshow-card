@@ -1,6 +1,6 @@
 class SlideshowCard extends Polymer.Element {
 
-  myPromise = new Promise(this.resolver);
+  myPromise = new Promise((resolve, reject) => { this.resolve = resolve });
 
   constructor() {
     super();
@@ -23,10 +23,6 @@ class SlideshowCard extends Polymer.Element {
     }
     this._showSlides(this.slideIndex);
     
-  }
-
-  resolver(resolve, reject) {
-    this.resolve = resolve;
   }
 
   set hass(hass) {
