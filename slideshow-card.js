@@ -95,22 +95,15 @@ class SlideshowCard extends Polymer.Element {
     this._cards = config.cards.map(async (item) => {
       let element;
       const helper = await window.loadCardHelpers();
-      if (item.type.startsWith("custom:")){
-        //element = document.createElement(`${item.type.substr("custom:".length)}`);
+      if (item.type.startsWith("custom:")) {
+        element = helper.createCardElement(item);
+      } else {
         element = helper.createCardElement(item);
       }
-      else {
-        //element = document.createElement(`hui-${item.type}-card`);
-        element = helper.createCardElement(item);
-      }
-      // try {
-      //   //element.setConfig(item);
-      // } catch(err) {
-      //   showErrorCard(err.message, config);
-      // }
       
-      if(this.hass)
+      if (this.hass) {
         element.hass = this.hass;
+      }
 
       return element;
     });
@@ -178,13 +171,13 @@ class SlideshowCard extends Polymer.Element {
     this.card.appendChild(style);
   }
 
-  async _setInnerCardStyle() {
+  _setInnerCardStyle() {
     if(this.config.cards) {
-      const styleCards = await Promise.all(this._cards);
+      const styleCards = this._cards;
       styleCards.forEach(item => {
         this.content.appendChild(item);
 
-        let target = item;
+        
         if(item.shadowRoot && item.shadowRoot.querySelector("ha-card")) {
           target = item.shadowRoot.querySelector("ha-card");
         } else if(item.querySelector("ha-card")) {
@@ -193,12 +186,25 @@ class SlideshowCard extends Polymer.Element {
           target = item.firstChild.shadowRoot.querySelector("ha-card");
         }
 
-        if(item.config){
+        let target = item;
+        let searching = true;
+        let search_counter = 0;
+        while(searching && search_counter < 50) {
+          if (target.firstElementChild) {
+            target = target.firstElementChild;
+          } else if(target.shadowRoot) {
+            target = target.shadowRoot;
+          } else {
+            searching = false;
+          }
+          search_counter++;
+        }
+
+        if (item.config) {
           for(var k in item.config.style) {
             target.style.setProperty(k, item.config.style[k]);
           }
-        }
-        else if(item._config) {
+        } else if (item._config) {
           for(var k in item._config.style) {
             target.style.setProperty(k, item._config.style[k]);
           }
