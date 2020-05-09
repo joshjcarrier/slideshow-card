@@ -1,4 +1,4 @@
-class SlideshowCard extends LitElement {
+class SlideshowCard extends Polymer.Element {
 
   myPromise = new Promise((resolve, reject) => { this.resolve = resolve });
 
