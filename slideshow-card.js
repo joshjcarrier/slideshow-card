@@ -10,7 +10,7 @@ class SlideshowCard extends Polymer.Element {
 
   async ready() {
     super.ready();
-    await Promise.all([this.updateComplete]);
+    await Promise.all([this.updateComplete, this.myPromise]);
     this._setInnerCardStyle()
     this._createNavigation();
     this.shadowRoot.firstChild.querySelector('.card').querySelector('.prev').addEventListener('click', this._prevSlide.bind(this));
@@ -188,32 +188,37 @@ class SlideshowCard extends Polymer.Element {
           target = item.firstChild.shadowRoot.querySelector("ha-card");
         }
 
-        let target = item;
-        let searching = true;
-        let search_counter = 0;
-        while(searching && search_counter < 50) {
-          if (target.firstElementChild) {
-            target = target.firstElementChild;
-          } else if(target.shadowRoot && target.shadowRoot.firstElementChild) {
-            target = target.shadowRoot;
-          } else {
-            searching = false;
-          }
-          search_counter++;
-        }
 
-        if (item.config) {
-          for(var k in item.config.style) {
-            target.style.setProperty(k, item.config.style[k]);
+        setTimeout(() => {
+          let target = item;
+          let searching = true;
+          let search_counter = 0;
+          while(searching && search_counter < 50) {
+            if (target.firstElementChild) {
+              target = target.firstElementChild;
+            } else if(target.shadowRoot && target.shadowRoot.firstElementChild) {
+              target = target.shadowRoot;
+            } else {
+              searching = false;
+            }
+            search_counter++;
           }
-        } else if (item._config) {
-          for(var k in item._config.style) {
-            target.style.setProperty(k, item._config.style[k]);
+  
+          if (item.config) {
+            for(var k in item.config.style) {
+              target.style.setProperty(k, item.config.style[k]);
+            }
+          } else if (item._config) {
+            for(var k in item._config.style) {
+              target.style.setProperty(k, item._config.style[k]);
+            }
           }
-        }
-
-        target.style.setProperty('box-shadow', 'none');
+  
+          
+        }, 2000)
+        item.style.setProperty('box-shadow', 'none');  
       });
+      
     }
   }
 
