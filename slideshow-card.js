@@ -186,31 +186,17 @@ class SlideshowCard extends Polymer.Element {
           target = item.querySelector("ha-card");
         } else if(item.firstChild && item.firstChild.shadowRoot && item.firstChild.shadowRoot.querySelector("ha-card")) {
           target = item.firstChild.shadowRoot.querySelector("ha-card");
+        } else {
+          target = item;
         }
 
-
-        // setTimeout(() => {
-        //   let target = item;
-        //   let searching = true;
-        //   let search_counter = 0;
-        //   while(searching && search_counter < 50) {
-        //     if (target.firstElementChild) {
-        //       target = target.firstElementChild;
-        //     } else if(target.shadowRoot && target.shadowRoot.firstElementChild) {
-        //       target = target.shadowRoot;
-        //     } else {
-        //       searching = false;
-        //     }
-        //     search_counter++;
-        //   }
-        // }, 2000)
-        if (item.config) {
-          for(var k in item.config.style) {
-            target.style.setProperty(k, item.config.style[k]);
-          }
-        } else if (item._config) {
-          for(var k in item._config.style) {
-            target.style.setProperty(k, item._config.style[k]);
+        let tempConfig = item.config ?? item._config;
+        if (tempConfig) {
+          for(var k in tempConfig.style) {
+            if(target && target.style) {
+              target.style.setProperty(k, tempConfig.style[k]);
+            }
+            
           }
         }
         item.style.setProperty('box-shadow', 'none');  
