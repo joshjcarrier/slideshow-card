@@ -178,7 +178,7 @@ class SlideshowCard extends Polymer.Element {
       const styleCards = this._cards;
       styleCards.forEach(item => {
         this.content.appendChild(item);
-
+        let target = null;
         
         if(item.shadowRoot && item.shadowRoot.querySelector("ha-card")) {
           target = item.shadowRoot.querySelector("ha-card");
