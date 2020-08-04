@@ -190,7 +190,10 @@ class SlideshowCard extends Polymer.Element {
           target = item;
         }
 
-        let tempConfig = item.config ?? item._config;
+        let tempConfig = item.config;
+        if(!tempConfig) {
+          tempConfig = item._config;
+        }
         if (tempConfig) {
           for(var k in tempConfig.style) {
             if(target && target.style) {
