@@ -5,7 +5,7 @@ class SlideshowCard extends Polymer.Element {
   constructor() {
     super();
     this.slideIndex = 1;
-    this.attachShadow({ mode: 'open' });    
+    this.attachShadow({ mode: 'open' });
   }
 
   async ready() {
@@ -48,9 +48,12 @@ class SlideshowCard extends Polymer.Element {
 
       if(hass.states[this.config.folder]) {
         this.images = hass.states[this.config.folder].attributes.file_list;
-        hass.states[this.config.folder].attributes.file_list.forEach(item => {
+        if (this.config.folder_sort) {
+          this.images.sort()
+        }
+        this.images.forEach(item => {
           const image = document.createElement('img');
-          var fileLocation = item.substring(11);
+          var fileLocation = item.substring(item.indexOf("www")+3);
           image.setAttribute("src", "/local" + fileLocation);
           image.className = 'slides fade';
           image.style.setProperty("width", "100%");
@@ -68,10 +71,14 @@ class SlideshowCard extends Polymer.Element {
           item.hass = hass;
         });
       if(hass.states[this.config.folder]){
-        hass.states[this.config.folder].attributes.file_list.forEach(item => {
+        this.images = hass.states[this.config.folder].attributes.file_list;
+        if (this.config.folder_sort) {
+          this.images.sort()
+        }
+        this.images.forEach(item => {
           if(!this.images.includes(item)){
             const image = document.createElement('img');
-            var fileLocation = item.substring(11);
+            var fileLocation = item.substring(item.indexOf("www")+3);
             image.setAttribute("src", "/local" + fileLocation);
             image.className = 'slides fade';
             image.style.setProperty("width", "100%");
@@ -91,9 +98,14 @@ class SlideshowCard extends Polymer.Element {
     this.config = config;
 
     if (!config || (!config.folder && (!config.cards || !Array.isArray(config.cards) || config.cards.length < 2))) {
-      throw new Error('Card Configuration is not set up properly!');
+      throw new Error('Card Configuration is not set up properly - no cards!');
     }
-      
+    
+    if (!config || (config.folder && (!config.cards || !Array.isArray(config.cards) || config.cards.length < 1))) {
+      throw new Error('Card Configuration is not set up properly - folder option needs at least 1 card!');
+    }
+
+
     this._cards = config.cards.map(async (item) => {
       let element;
       const helper = await window.loadCardHelpers();
@@ -155,9 +167,9 @@ class SlideshowCard extends Polymer.Element {
 
       .fade {
         -webkit-animation-name: fade;
-        -webkit-animation-duration: 1s;
+        -webkit-animation-duration: DURATION;
         animation-name: fade;
-        animation-duration: 1s;
+        animation-duration: DURATION;
       }
 
       @-webkit-keyframes fade {
@@ -170,6 +182,11 @@ class SlideshowCard extends Polymer.Element {
         to {opacity: 1}
       }
     `;
+    if (this.config.no_fade) {
+      style.innerHTML = style.innerHTML.replace("DURATION","0")
+    } else {
+      style.innerHTML = style.innerHTML.replace("DURATION","1s")
+    }
     this.card.appendChild(style);
   }
 
@@ -202,7 +219,7 @@ class SlideshowCard extends Polymer.Element {
             
           }
         }
-        item.style.setProperty('box-shadow', 'none');  
+        item.style.setProperty('box-shadow', 'none');
       });
       
     }
