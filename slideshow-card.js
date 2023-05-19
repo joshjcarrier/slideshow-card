@@ -1,6 +1,6 @@
 // import {Polymer} from '@polymer/polymer';
-import {Polymer} from "https://unpkg.com/browse/@polymer/polymer@3.0.3/polymer-element.js?module";
-class SlideshowCard extends Polymer.Element {
+import {htpm, PolymerElement} from "https://unpkg.com/browse/@polymer/polymer@3.0.3/polymer-element.js?module";
+class SlideshowCard extends PolymerElement {
 
   myPromise = new Promise((resolve, reject) => { this.resolve = resolve });
 
