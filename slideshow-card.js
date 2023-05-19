@@ -1,3 +1,4 @@
+import {Polymer} from '@polymer/polymer';
 class SlideshowCard extends Polymer.Element {
 
   myPromise = new Promise((resolve, reject) => { this.resolve = resolve });
