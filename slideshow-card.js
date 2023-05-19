@@ -1,8 +1,8 @@
 // import {Polymer} from '@polymer/polymer';
-// import {Polymer} from "https://unpkg.com/browse/@polymer/polymer@3.0.3/polymer-legacy.js?module";
-import { PolymerElement, html } from 'https://unpkg.com/@polymer/polymer@3.0.0/polymer-element.js?module';
-//class SlideshowCard extends Polymer.Element {
-class SlideshowCard extends PolymerElement {
+import {Polymer} from "https://unpkg.com/browse/@polymer/polymer@3.0.3/polymer-legacy.js?module";
+// import { PolymerElement, html } from 'https://unpkg.com/@polymer/polymer@3.0.0/polymer-element.js?module';
+class SlideshowCard extends Polymer.Element {
+// class SlideshowCard extends PolymerElement {
   myPromise = new Promise((resolve) => { this.resolve = resolve });
 
   constructor() {
