@@ -2,7 +2,7 @@
 import {Polymer} from "https://unpkg.com/browse/@polymer/polymer@3.0.3/polymer-legacy.js?module";
 class SlideshowCard extends Polymer.Element {
 
-  myPromise = new Promise((resolve, reject) => { this.resolve = resolve });
+  myPromise = new Promise((resolve) => { this.resolve = resolve });
 
   constructor() {
     super();
