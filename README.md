@@ -12,7 +12,7 @@ Slideshow Card for Home Assistant's UI LoveLace
 | type | string | **Required** | `custom:slideshow-card`
 | cards | list | **Required**/**Optional** | List of cards `Reqires 2 or more cards` `Only Optional if folder=true`
 | style | list | **Optional** | List of Style attributes
-| arrow_color | string | **Optional** | Color of the Navigational Arrows, `Default: Black`
+| arrow_color | string | **Optional** | Color of the Navigational Arrows or `transparent`, `Default: Black`
 | arrow_opacity | string | **Optional** | Opacity of the Navigational Arrows, `Default: 1`
 | fill | boolean | **Optional** | Makes the inner Cards fill the container, `Default: false`
 | auto_play | boolean | **Optional** | Option to turn on/off auto switching of the cards, `Default: false`
