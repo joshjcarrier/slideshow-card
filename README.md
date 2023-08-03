@@ -1,5 +1,6 @@
 # Slideshow Card
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+[![Validate with hassfest](https://github.com/joshjcarrier/slideshow-card/actions/workflows/validate.yml/badge.svg)](https://github.com/joshjcarrier/slideshow-card/actions/workflows/validate.yml)
 
 Slideshow Card for Home Assistant's UI LoveLace
 
