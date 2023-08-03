@@ -1,7 +1,7 @@
 // import {Polymer} from '@polymer/polymer';
 import { PolymerElement } from "https://unpkg.com/@polymer/polymer@3.0.3/polymer-element.js?module";
 // import { PolymerElement, html } from 'https://unpkg.com/@polymer/polymer@3.0.0/polymer-element.js?module';
-class SlideshowCard extends Polymer.Element {
+class SlideshowCard extends PolymerElement {
 // class SlideshowCard extends PolymerElement {
   myPromise = new Promise((resolve) => { this.resolve = resolve });
 
