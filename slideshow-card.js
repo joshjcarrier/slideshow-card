@@ -7,8 +7,8 @@ class SlideshowCard extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  async ready() {
-    super.ready();
+  async connectedCallback() {
+    //super.ready();
     await Promise.all([this.updateComplete, this.myPromise]);
     this._setInnerCardStyle()
     this._createNavigation();
