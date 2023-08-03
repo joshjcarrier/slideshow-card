@@ -1,10 +1,9 @@
 # Slideshow Card
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
-![HACS Validation](https://github.com/igloo15/slideshow-card/workflows/Validate/badge.svg)
 
 Slideshow Card for Home Assistant's UI LoveLace
 
-**Updated to work with 0.107.0+ Home Assistant**
+**Updated to work with 2023.4+ Home Assistant**
 
 ## Configuration Variables
 
